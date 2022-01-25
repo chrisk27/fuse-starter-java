@@ -29,8 +29,8 @@ public class IexService {
    *
    * @return a list of all Stock Symbols from IEX.
    */
-  public List<IexSymbol> getAllSymbols(@RequestParam("token") String token) {
-    return iexClient.getAllSymbols(token);
+  public List<IexSymbol> getAllSymbols() {
+    return iexClient.getAllSymbols();
   }
 
   /**
@@ -39,11 +39,11 @@ public class IexService {
    * @param symbols the list of symbols to get a last traded price for.
    * @return a list of last traded price objects for each Symbol that is passed in.
    */
-  public List<IexLastTradedPrice> getLastTradedPriceForSymbols(final List<String> symbols, final String token) {
+  public List<IexLastTradedPrice> getLastTradedPriceForSymbols(final List<String> symbols) {
     if (CollectionUtils.isEmpty(symbols)) {
       return Collections.emptyList();
     } else {
-      return iexClient.getLastTradedPriceForSymbols(symbols.toArray(new String[0]), token);
+      return iexClient.getLastTradedPriceForSymbols(symbols.toArray(new String[0]));
     }
   }
 

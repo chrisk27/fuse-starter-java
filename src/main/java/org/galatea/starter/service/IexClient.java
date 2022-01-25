@@ -22,8 +22,9 @@ public interface IexClient {
    *
    * @return a list of all of the stock symbols supported by IEX.
    */
-  @GetMapping("/ref-data/iex/symbols")
-  List<IexSymbol> getAllSymbols(@RequestParam("token") String token);
+  /*@GetMapping("/ref-data/iex/symbols?token=${spring.application.iex_token}")*/
+   @GetMapping("/ref-data/iex/symbols?token=${spring.application.iex_token}")
+  List<IexSymbol> getAllSymbols();
 
   /**
    * Get the last traded price for each stock symbol passed in. See https://iextrading.com/developer/docs/#last.
@@ -31,7 +32,7 @@ public interface IexClient {
    * @param symbols stock symbols to get last traded price for.
    * @return a list of the last traded price for each of the symbols passed in.
    */
-  @GetMapping("/tops/last")
-  List<IexLastTradedPrice> getLastTradedPriceForSymbols(@RequestParam("symbols") String[] symbols, @RequestParam("token") String token);
+  @GetMapping("/tops/last?token=${spring.application.iex_token}" )
+  List<IexLastTradedPrice> getLastTradedPriceForSymbols(@RequestParam("symbols") String[] symbols);
 
 }

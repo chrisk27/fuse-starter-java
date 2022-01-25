@@ -31,8 +31,8 @@ public class IexRestController {
    * @return a list of all IexStockSymbols.
    */
   @GetMapping(value = "${mvc.iex.getAllSymbolsPath}", produces = {MediaType.APPLICATION_JSON_VALUE})
-  public List<IexSymbol> getAllStockSymbols(@RequestParam(value = "token") final String token) {
-    return iexService.getAllSymbols(token);
+  public List<IexSymbol> getAllStockSymbols() {
+    return iexService.getAllSymbols();
   }
 
   /**
@@ -44,9 +44,8 @@ public class IexRestController {
   @GetMapping(value = "${mvc.iex.getLastTradedPricePath}", produces = {
       MediaType.APPLICATION_JSON_VALUE})
   public List<IexLastTradedPrice> getLastTradedPrice(
-      @RequestParam(value = "symbols") final List<String> symbols,
-      @RequestParam(value = "token") final String token) {
-    return iexService.getLastTradedPriceForSymbols(symbols, token);
+      @RequestParam(value = "symbols") final List<String> symbols) {
+    return iexService.getLastTradedPriceForSymbols(symbols);
   }
 
 }
