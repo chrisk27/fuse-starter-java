@@ -25,6 +25,7 @@ mvc:
    iex:
       getAllSymbolsPath: /iex/symbols
       getLastTradedPricePath: /iex/lastTradedPrice
+      getHistoricalPricesPath: /iex/historicalPrices
    max-size-trace-payload: 50000
 jms:
    listener-concurrency: 1-5
@@ -58,7 +59,7 @@ server:
 spring:
    profiles: dev
    application:
-      iex_token: pk_f2eab8521550424084e5da12003d3591
+      iex_token: {INSERT_IEX_TOKEN_HERE}
       # Need to insert Iex Cloud token above
    datasource:
       username: sa
