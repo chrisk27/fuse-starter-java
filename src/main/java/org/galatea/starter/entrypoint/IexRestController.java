@@ -53,15 +53,15 @@ public class IexRestController {
    * Get the historical price for each symbol passed in for the date passed in.
    *
    * @param symbol list of symbols to get historical price for.
-   * @param date (formatted YYYYMMDD) the date for which you want the price on.
+   * @param dateOrRange the date (formatted YYYYMMDD) or the range of time  (ex. "5m", "ytd" ).
    * @return a List of IexHistoricalPrices objects for the given symbols.
    */
   @GetMapping(value = "${mvc.iex.getHistoricalPricesPath}", produces = {
       MediaType.APPLICATION_JSON_VALUE})
   public List<IexHistoricalPrices> getHistoricalPrices(
       @RequestParam final String symbol,
-      @RequestParam final String date) {
-    return iexService.getHistoricalPricesForSymbol(symbol, date);
+      @RequestParam final String dateOrRange) {
+    return iexService.getHistoricalPricesForSymbol(symbol, dateOrRange);
   }
 
 }

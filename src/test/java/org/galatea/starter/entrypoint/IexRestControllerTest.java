@@ -85,7 +85,7 @@ public class IexRestControllerTest extends ASpringTest {
   public void testGetHistoricalPrices() throws Exception {
     MvcResult result = this.mvc.perform(
         org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-            .get("/iex/historicalPrices?token=xyz1&date=20200126&symbol=AAPL")
+            .get("/iex/historicalPrices?token=xyz1&dateOrRange=20200126&symbol=AAPL")
             // This URL will be hit by the MockMvc client. The result is configured in the file
             // src/test/resources/wiremock/mappings/mapping-historicalPrices.json
             .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -100,7 +100,7 @@ public class IexRestControllerTest extends ASpringTest {
   public void testGetHistoricalPricesSymbolEmpty() throws Exception {
     MvcResult result = this.mvc.perform(
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                .get("/iex/historicalPrices?token=xyz1&symbol=&date=20200126")
+                .get("/iex/historicalPrices?token=xyz1&symbol=&dateOrRange=20200126")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", is(Collections.emptyList())))
@@ -111,7 +111,7 @@ public class IexRestControllerTest extends ASpringTest {
   public void testGetHistoricalPricesDateEmpty() throws Exception {
     MvcResult result = this.mvc.perform(
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                .get("/iex/historicalPrices?token=xyz1&symbol=AAPL&date=")
+                .get("/iex/historicalPrices?token=xyz1&symbol=AAPL&dateOrRange=")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", is(Collections.emptyList())))
@@ -122,7 +122,7 @@ public class IexRestControllerTest extends ASpringTest {
   public void testGetHistoricalPricesAllEmpty() throws Exception {
     MvcResult result = this.mvc.perform(
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                .get("/iex/historicalPrices?token=xyz1&symbol=&date=")
+                .get("/iex/historicalPrices?token=xyz1&symbol=&dateOrRange=")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", is(Collections.emptyList())))

@@ -11,7 +11,6 @@ import org.galatea.starter.domain.IexSymbol;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * A layer for transformation, aggregation, and business required when retrieving data from IEX.
@@ -52,15 +51,15 @@ public class IexService {
    * Get the historical price for each symbol passed in for the date passed in.
    *
    * @param symbol list of symbols to get historical price for.
-   * @param date (formatted YYYYMMDD) the date for which you want the price on.
+   * @param dateOrRange the date (formatted YYYYMMDD) or the range of time  (ex. "5m", "ytd" ).
    * @return a IexHistoricalPrices objects for the given symbols.
    */
   public List<IexHistoricalPrices> getHistoricalPricesForSymbol(
-      final String symbol, final String date) {
-    if (symbol.isEmpty() || date.isEmpty()) {
+      final String symbol, final String dateOrRange) {
+    if (symbol.isEmpty() || dateOrRange.isEmpty()) {
       return Collections.emptyList();
     } else {
-      return iexClient.getHistoricalPricesForSymbol(symbol, date);
+      return iexClient.getHistoricalPricesForSymbol(symbol, dateOrRange);
     }
   }
 

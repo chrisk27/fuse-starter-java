@@ -40,12 +40,12 @@ public interface IexClient {
    * Get the historical price for each symbol passed in for the date passed in.
    *
    * @param symbol symbol to get historical price for.
-   * @param date (formatted YYYYMMDD) the date for which you want the price on.
+   * @param dateOrRange the date (formatted YYYYMMDD) or the range of time  (ex. "5m", "ytd" ).
    * @return a IexHistoricalPrices objects for the given symbols.
    */
   @GetMapping("/stock/{symbol}/chart/{date}?token=${spring.application.iex_token}")
   List<IexHistoricalPrices> getHistoricalPricesForSymbol(@PathVariable("symbol") String symbol,
-      @PathVariable("date") String date);
+      @PathVariable("date") String dateOrRange);
 
 
 }
