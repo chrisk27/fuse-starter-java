@@ -9,8 +9,10 @@ import org.galatea.starter.domain.IexHistoricalPrices;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * A layer for transformation, aggregation, and business required when retrieving data from IEX.
@@ -41,7 +43,7 @@ public class IexService {
    */
   public List<IexLastTradedPrice> getLastTradedPriceForSymbols(final List<String> symbols) {
     if (CollectionUtils.isEmpty(symbols)) {
-      return Collections.emptyList();
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Stock symbol was not provided.");
     } else {
       return iexClient.getLastTradedPriceForSymbols(symbols.toArray(new String[0]));
     }
@@ -56,12 +58,13 @@ public class IexService {
    */
   public List<IexHistoricalPrices> getHistoricalPricesForSymbol(
       final String symbol, final String dateOrRange) {
-    if (symbol.isEmpty() || dateOrRange.isEmpty()) {
-      return Collections.emptyList();
+    if (symbol.isEmpty()) {
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Stock symbol was not provided.");
+    } else if (dateOrRange.isEmpty()) {
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Date or Range was not provided.");
     } else {
       return iexClient.getHistoricalPricesForSymbol(symbol, dateOrRange);
     }
   }
-
 
 }
