@@ -160,6 +160,35 @@
 			"response": []
 		},
 		{
+			"name": "IEX - Get historical price",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{host}}/iex/historicalPrices?symbol=AAPL&date=20200126",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"iex",
+						"historicalPrices"
+					],
+					"query": [
+						{
+							"key": "symbol",
+							"value": "AAPL"
+						},
+						{
+							"key": "date",
+							"value": "20200126"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Run Trace",
 			"request": {
 				"method": "GET",
