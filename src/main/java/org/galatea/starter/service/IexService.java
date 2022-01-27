@@ -57,7 +57,7 @@ public class IexService {
    */
   public List<IexHistoricalPrices> getHistoricalPricesForSymbol(
       final String symbol, final String date) {
-    if (symbol.isEmpty()) {
+    if (symbol.isEmpty() || date.isEmpty()) {
       return Collections.emptyList();
     } else {
       return iexClient.getHistoricalPricesForSymbol(symbol, date);
