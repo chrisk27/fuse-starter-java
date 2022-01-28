@@ -82,17 +82,32 @@ public class IexRestControllerTest extends ASpringTest {
   }
 
   @Test
-  public void testGetHistoricalPrices() throws Exception {
+  public void testGetHistoricalPricesDate() throws Exception {
     MvcResult result = this.mvc.perform(
         org.springframework.test.web.servlet.request.MockMvcRequestBuilders
             .get("/iex/historicalPrices?token=xyz1&dateOrRange=20200126&symbol=AAPL")
             // This URL will be hit by the MockMvc client. The result is configured in the file
-            // src/test/resources/wiremock/mappings/mapping-historicalPrices.json
+            // src/test/resources/wiremock/mappings/mapping-historicalPrices-date.json
             .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].symbol", is("AAPL")))
         .andExpect(jsonPath("$[0].close").value(new BigDecimal("75.0875")))
         .andExpect(jsonPath("$[0].volume").value(135647456))
+        .andReturn();
+  }
+
+  @Test
+  public void testGetHistoricalPricesRange() throws Exception {
+    MvcResult result = this.mvc.perform(
+        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+            .get("/iex/historicalPrices?token=xyz1&dateOrRange=5m&symbol=IBM")
+            // This URL will be hit by the MockMvc client. The result is configured in the file
+            // src/test/resources/wiremock/mappings/mapping-historicalPrices-range.json
+            .accept(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$[0].symbol", is("IBM")))
+        .andExpect(jsonPath("$[0].open").value(new BigDecimal("139.5")))
+        .andExpect(jsonPath("$[1].volume").value(4235101))
+        .andExpect(jsonPath("$[1].date", is("2021-08-30")))
         .andReturn();
   }
 

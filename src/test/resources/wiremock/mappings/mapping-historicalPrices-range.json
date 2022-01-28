@@ -1,0 +1,47 @@
+{
+  "name" : "stock_sym_chart_range",
+  "request" : {
+    "url" : "/stock/IBM/chart/5m?token=xyz1",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : [{
+      "symbol" : "IBM",
+      "close" : 138.97,
+      "high" : 139.88,
+      "low" : 138.815,
+      "open" : 139.5,
+      "volume" : 1995526,
+      "date" : "2021-08-30"
+    },
+      {
+        "symbol":"IBM",
+        "close":140.34,
+        "high":140.94,
+        "low":138.95,
+        "open":139.54,
+        "volume":4235101,
+        "date" : "2021-08-30"
+      }],
+    "headers" : {
+      "Server" : "nginx",
+      "Date" : "Thu, 08 Aug 2019 14:08:53 GMT",
+      "Content-Type" : "application/json; charset=utf-8",
+      "Connection" : "keep-alive",
+      "set-cookie" : "ctoken=958c0e17a3f542a2a13ef676b670326d; Domain=.iextrading.com; Path=/; Expires=Fri, 09 Aug 2019 02:08:53 GMT; Secure",
+      "Content-Security-Policy" : "default-src 'self'; child-src 'none'; object-src 'none'; style-src 'self' 'unsafe-inline'; font-src data:; frame-src 'self'; connect-src 'self' https://auth.iextrading.com https://api.iextrading.com https://api.iextrading.com wss://iextrading.com wss://tops.iextrading.com wss://api.iextrading.com wss://iextrading.com https://iextrading.com/member-center; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com/analytics.js;",
+      "X-Content-Security-Policy" : "default-src 'self'; child-src 'none'; object-src 'none'; style-src 'self' 'unsafe-inline'; font-src data:; frame-src 'self'; connect-src 'self' https://auth.iextrading.com https://api.iextrading.com https://api.iextrading.com wss://iextrading.com wss://tops.iextrading.com wss://api.iextrading.com wss://iextrading.com https://iextrading.com/member-center; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com/analytics.js;",
+      "Frame-Options" : "SAMEORIGIN",
+      "X-Frame-Options" : "SAMEORIGIN",
+      "X-Content-Type-Options" : "nosniff",
+      "Strict-Transport-Security" : "max-age=15768000",
+      "Access-Control-Allow-Origin" : "*",
+      "Access-Control-Allow-Credentials" : "true",
+      "Access-Control-Allow-Methods" : "GET, OPTIONS",
+      "Access-Control-Allow-Headers" : "Origin, X-Requested-With, Content-Type, Accept"
+    }
+  },
+  "persistent" : true,
+  "insertionIndex" : 11
+}

@@ -1,5 +1,5 @@
 {
-  "name" : "stock_sym_chart_dat",
+  "name" : "stock_sym_chart_date",
   "request" : {
     "url" : "/stock/AAPL/chart/20200126?token=xyz1",
     "method" : "GET"
