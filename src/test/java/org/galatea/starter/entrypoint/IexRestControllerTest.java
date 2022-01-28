@@ -76,8 +76,7 @@ public class IexRestControllerTest extends ASpringTest {
         org.springframework.test.web.servlet.request.MockMvcRequestBuilders
             .get("/iex/lastTradedPrice?token=xyz1&symbols=")
             .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$", is(Collections.emptyList())))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 

@@ -41,7 +41,7 @@ public class IexService {
    */
   public List<IexLastTradedPrice> getLastTradedPriceForSymbols(final List<String> symbols) {
     if (CollectionUtils.isEmpty(symbols)) {
-      return Collections.emptyList();
+      throw new BadArgumentsException("No Stock Symbol Provided.");
     } else {
       return iexClient.getLastTradedPriceForSymbols(symbols.toArray(new String[0]));
     }
