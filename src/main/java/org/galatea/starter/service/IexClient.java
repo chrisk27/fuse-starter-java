@@ -1,10 +1,14 @@
 package org.galatea.starter.service;
 
 import java.util.List;
+import javax.websocket.server.PathParam;
+import org.galatea.starter.domain.IexHistoricalPrices;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -20,7 +24,7 @@ public interface IexClient {
    *
    * @return a list of all of the stock symbols supported by IEX.
    */
-  @GetMapping("/ref-data/symbols")
+  @GetMapping("/ref-data/iex/symbols?token=${spring.application.iex_token}")
   List<IexSymbol> getAllSymbols();
 
   /**
@@ -29,7 +33,19 @@ public interface IexClient {
    * @param symbols stock symbols to get last traded price for.
    * @return a list of the last traded price for each of the symbols passed in.
    */
-  @GetMapping("/tops/last")
+  @GetMapping("/tops/last?token=${spring.application.iex_token}")
   List<IexLastTradedPrice> getLastTradedPriceForSymbols(@RequestParam("symbols") String[] symbols);
+
+  /**
+   * Get the historical price for each symbol passed in for the date passed in.
+   *
+   * @param symbol symbol to get historical price for.
+   * @param dateOrRange the date (formatted YYYYMMDD) or the range of time  (ex. "5m", "ytd" ).
+   * @return a IexHistoricalPrices objects for the given symbols.
+   */
+  @GetMapping("/stock/{symbol}/chart/{date}?token=${spring.application.iex_token}")
+  List<IexHistoricalPrices> getHistoricalPricesForSymbol(@PathVariable("symbol") String symbol,
+      @PathVariable("date") String dateOrRange);
+
 
 }
