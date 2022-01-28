@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import javax.servlet.RequestDispatcher;
 import junitparams.JUnitParamsRunner;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -101,8 +102,7 @@ public class IexRestControllerTest extends ASpringTest {
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
                 .get("/iex/historicalPrices?token=xyz1&symbol=&dateOrRange=20200126")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$", is(Collections.emptyList())))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 
@@ -112,8 +112,7 @@ public class IexRestControllerTest extends ASpringTest {
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
                 .get("/iex/historicalPrices?token=xyz1&symbol=AAPL&dateOrRange=")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$", is(Collections.emptyList())))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 
@@ -123,8 +122,7 @@ public class IexRestControllerTest extends ASpringTest {
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
                 .get("/iex/historicalPrices?token=xyz1&symbol=&dateOrRange=")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$", is(Collections.emptyList())))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 }
