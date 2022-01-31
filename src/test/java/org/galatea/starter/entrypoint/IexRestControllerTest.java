@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import javax.servlet.RequestDispatcher;
 import junitparams.JUnitParamsRunner;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,18 +77,17 @@ public class IexRestControllerTest extends ASpringTest {
         org.springframework.test.web.servlet.request.MockMvcRequestBuilders
             .get("/iex/lastTradedPrice?token=xyz1&symbols=")
             .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$", is(Collections.emptyList())))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 
   @Test
-  public void testGetHistoricalPrices() throws Exception {
+  public void testGetHistoricalPricesDate() throws Exception {
     MvcResult result = this.mvc.perform(
         org.springframework.test.web.servlet.request.MockMvcRequestBuilders
             .get("/iex/historicalPrices?token=xyz1&dateOrRange=20200126&symbol=AAPL")
             // This URL will be hit by the MockMvc client. The result is configured in the file
-            // src/test/resources/wiremock/mappings/mapping-historicalPrices.json
+            // src/test/resources/wiremock/mappings/mapping-historicalPrices-date.json
             .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].symbol", is("AAPL")))
@@ -97,13 +97,27 @@ public class IexRestControllerTest extends ASpringTest {
   }
 
   @Test
+  public void testGetHistoricalPricesRange() throws Exception {
+    MvcResult result = this.mvc.perform(
+        org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+            .get("/iex/historicalPrices?token=xyz1&dateOrRange=5m&symbol=IBM")
+            // This URL will be hit by the MockMvc client. The result is configured in the file
+            // src/test/resources/wiremock/mappings/mapping-historicalPrices-range.json
+            .accept(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$[0].symbol", is("IBM")))
+        .andExpect(jsonPath("$[0].open").value(new BigDecimal("139.5")))
+        .andExpect(jsonPath("$[1].volume").value(4235101))
+        .andExpect(jsonPath("$[1].date", is("2021-08-30")))
+        .andReturn();
+  }
+
+  @Test
   public void testGetHistoricalPricesSymbolEmpty() throws Exception {
     MvcResult result = this.mvc.perform(
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
                 .get("/iex/historicalPrices?token=xyz1&symbol=&dateOrRange=20200126")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$", is(Collections.emptyList())))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 
@@ -113,8 +127,7 @@ public class IexRestControllerTest extends ASpringTest {
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
                 .get("/iex/historicalPrices?token=xyz1&symbol=AAPL&dateOrRange=")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$", is(Collections.emptyList())))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 
@@ -124,8 +137,7 @@ public class IexRestControllerTest extends ASpringTest {
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
                 .get("/iex/historicalPrices?token=xyz1&symbol=&dateOrRange=")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$", is(Collections.emptyList())))
+        .andExpect(status().isBadRequest())
         .andReturn();
   }
 }

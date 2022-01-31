@@ -1,6 +1,5 @@
 package org.galatea.starter.service;
 
-import java.util.Collections;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -8,11 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.galatea.starter.domain.IexHistoricalPrices;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * A layer for transformation, aggregation, and business required when retrieving data from IEX.
@@ -43,7 +39,7 @@ public class IexService {
    */
   public List<IexLastTradedPrice> getLastTradedPriceForSymbols(final List<String> symbols) {
     if (CollectionUtils.isEmpty(symbols)) {
-      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Stock symbol was not provided.");
+      throw new BadArgumentsException("No Stock Symbol Provided.");
     } else {
       return iexClient.getLastTradedPriceForSymbols(symbols.toArray(new String[0]));
     }
@@ -59,12 +55,13 @@ public class IexService {
   public List<IexHistoricalPrices> getHistoricalPricesForSymbol(
       final String symbol, final String dateOrRange) {
     if (symbol.isEmpty()) {
-      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Stock symbol was not provided.");
+      throw new BadArgumentsException("No Stock Symbol Provided.");
     } else if (dateOrRange.isEmpty()) {
-      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Date or Range was not provided.");
+      throw new BadArgumentsException("No Date or Range Provided.");
     } else {
       return iexClient.getHistoricalPricesForSymbol(symbol, dateOrRange);
     }
   }
+
 
 }
