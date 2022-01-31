@@ -39,7 +39,7 @@ public class IexService {
    */
   public List<IexLastTradedPrice> getLastTradedPriceForSymbols(final List<String> symbols) {
     if (CollectionUtils.isEmpty(symbols)) {
-      throw new BadArgumentsException("No Stock Symbol Provided.");
+      throw new IllegalArgumentException("No Stock Symbol Provided.");
     } else {
       return iexClient.getLastTradedPriceForSymbols(symbols.toArray(new String[0]));
     }
@@ -49,17 +49,24 @@ public class IexService {
    * Get the historical price for each symbol passed in for the date passed in.
    *
    * @param symbol list of symbols to get historical price for.
-   * @param dateOrRange the date (formatted YYYYMMDD) or the range of time  (ex. "5m", "ytd" ).
+   * @param range the range of time  (ex. "5m", "ytd" ) to get previous data (Optional).
+   * @param date the date from which we would want to get the previous data from (Optional).
+   * Note: If neither optional parameter is used, the system will default to range = 1m.
+   * - default behavior of Iex Cloud API
+   * Note: If both optional parameters are provided, the system will default to the date.
+   * - can be changed later if needed: IexCloud will not allow both options in call to client
    * @return a IexHistoricalPrices objects for the given symbols.
    */
   public List<IexHistoricalPrices> getHistoricalPricesForSymbol(
-      final String symbol, final String dateOrRange) {
+      final String symbol, String range, String date) {
     if (symbol.isEmpty()) {
-      throw new BadArgumentsException("No Stock Symbol Provided.");
-    } else if (dateOrRange.isEmpty()) {
-      throw new BadArgumentsException("No Date or Range Provided.");
+      throw new IllegalArgumentException("No Stock Symbol Provided.");
+    } else if (range.isEmpty() && date.isEmpty()) {
+      return iexClient.getHistoricalPricesForSymbolByRange(symbol, "1m");
+    } else if (date.isEmpty()) {
+      return iexClient.getHistoricalPricesForSymbolByRange(symbol, range);
     } else {
-      return iexClient.getHistoricalPricesForSymbol(symbol, dateOrRange);
+      return iexClient.getHistoricalPricesForSymbolByDate(symbol, date);
     }
   }
 
