@@ -40,12 +40,22 @@ public interface IexClient {
    * Get the historical price for each symbol passed in for the date passed in.
    *
    * @param symbol symbol to get historical price for.
-   * @param dateOrRange the date (formatted YYYYMMDD) or the range of time  (ex. "5m", "ytd" ).
-   * @return a IexHistoricalPrices objects for the given symbols.
+   * @param date the date (formatted YYYYMMDD) from which we want to get the historical prices for.
+   * @return a IexHistoricalPrices objects for the given symbol.
    */
-  @GetMapping("/stock/{symbol}/chart/{date}?token=${spring.application.iex_token}")
-  List<IexHistoricalPrices> getHistoricalPricesForSymbol(@PathVariable("symbol") String symbol,
-      @PathVariable("date") String dateOrRange);
+  @GetMapping("/stock/{symbol}/chart/date/{date}?token=${spring.application.iex_token}")
+  List<IexHistoricalPrices> getHistoricalPricesForSymbolByDate(@PathVariable("symbol") String symbol,
+      @PathVariable("date") String date);
 
-
+  /**
+   * Get the historical price for each symbol passed in for the date passed in.
+   *
+   * @param symbol symbol to get historical price for.
+   * @param range the range of time  (ex. "5m", "ytd" ) to get previous data (Optional).
+   * Note: Will default to range=1m
+   * @return a IexHistoricalPrices objects for the given symbol.
+   */
+  @GetMapping("/stock/{symbol}/chart/{range}?token=${spring.application.iex_token}")
+  List<IexHistoricalPrices> getHistoricalPricesForSymbolByRange(@PathVariable("symbol") String symbol,
+      @PathVariable("range") String range);
 }
