@@ -18,13 +18,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
 @Log(enterLevel = Level.INFO, exitLevel = Level.INFO)
 @Validated
 @RestController
 @RequiredArgsConstructor
-public class IexRestController {
+public class IexRestController extends ResponseEntityExceptionHandler {
 
   @NonNull
   private IexService iexService;
@@ -69,10 +70,10 @@ public class IexRestController {
       MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity getHistoricalPrices(
       @RequestParam final String symbol,
-      @RequestParam(required = false) String range,
-      @RequestParam(required = false) String date) {
-    if (symbol.isEmpty()) {
-      return new ResponseEntity<>("No Stock Symbol Provided.", HttpStatus.BAD_REQUEST);
+      @RequestParam(name="range",required = false) String range,
+      @RequestParam(name="date",required = false) String date) {
+    if (symbol.isBlank()) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     } else {
       return new ResponseEntity<>(iexService.getHistoricalPricesForSymbol(symbol, range, date),
           HttpStatus.OK);

@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.galatea.starter.domain.IexHistoricalPrices;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -59,11 +61,11 @@ public class IexService {
    */
   public List<IexHistoricalPrices> getHistoricalPricesForSymbol(
       final String symbol, String range, String date) {
-    if (symbol.isEmpty()) {
+    if (symbol.isBlank()) {
       throw new IllegalArgumentException("No Stock Symbol Provided.");
-    } else if (range.isEmpty() && date.isEmpty()) {
+    } else if (range==null && date==null) {
       return iexClient.getHistoricalPricesForSymbolByRange(symbol, "1m");
-    } else if (date.isEmpty()) {
+    } else if (date==null) {
       return iexClient.getHistoricalPricesForSymbolByRange(symbol, range);
     } else {
       return iexClient.getHistoricalPricesForSymbolByDate(symbol, date);
