@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class IexHistoricalPricesDB extends IexHistoricalPrices {
+public class IexHistoricalPricesDB {
 
   @Id
   @GeneratedValue (strategy = GenerationType.AUTO)
@@ -42,6 +42,20 @@ public class IexHistoricalPricesDB extends IexHistoricalPrices {
     this.open = open;
     this.volume = volume;
     this.date = date;
+  }
+
+  /**
+   * Constructs database entry from an IexHistoricalPrices object from API call
+   * @param entity an IexHistoricalPrices object
+   */
+  public IexHistoricalPricesDB(final IexHistoricalPrices entity) {
+    this.symbol = entity.getSymbol();
+    this.close = entity.getClose();
+    this.high = entity.getHigh();
+    this.low = entity.getLow();
+    this.open = entity.getOpen();
+    this.volume = entity.getVolume();
+    this.date = entity.getDate();
   }
 
   @Override
