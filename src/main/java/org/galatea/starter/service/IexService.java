@@ -53,20 +53,20 @@ public class IexService {
    * @param symbol list of symbols to get historical price for.
    * @param range the range of time  (ex. "5m", "ytd" ) to get previous data (Optional).
    * @param date the date from which we would want to get the previous data from (Optional).
-   * Note: If neither optional parameter is used, the system will default to range = 1m.
-   * - default behavior of Iex Cloud API
-   * Note: If both optional parameters are provided, the system will default to the date.
-   * - can be changed later if needed: IexCloud will not allow both options in call to client
+   *      Note: If neither optional parameter is used, the system will default to range = 1m.
+   *      - default behavior of Iex Cloud API
+   *      Note: If both optional parameters are provided, the system will default to the date.
+   *      - can be changed later if needed: IexCloud will not allow both options in call to client
    * @return a IexHistoricalPrices objects for the given symbols.
    */
   public List<IexHistoricalPrices> getHistoricalPricesForSymbol(
-      final String symbol, String range, String date) {
-    if (symbol==null) {
+      final String symbol, final String range, final String date) {
+    if (symbol == null) {
       throw new IllegalArgumentException("No Stock Symbol Provided.");
-    } else if (range==null && date==null) {
+    } else if (range == null && date == null) {
       String rangeVal = "1m";
       return iexClient.getHistoricalPricesForSymbolByRange(symbol, rangeVal);
-    } else if (date==null) {
+    } else if (date == null) {
       return iexClient.getHistoricalPricesForSymbolByRange(symbol, range);
     } else {
       return iexClient.getHistoricalPricesForSymbolByDate(symbol, date);

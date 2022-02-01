@@ -63,16 +63,16 @@ public class IexRestController extends ResponseEntityExceptionHandler {
    * @param symbol list of symbols to get historical price for.
    * @param range the range of time  (ex. "5m", "ytd" ) to get previous data (Optional).
    * @param date the date from which we would want to get the previous data from (Optional).
-   * Note: If neither optional parameter is used, the system will default to range = 1m.
+   *      Note: If neither optional parameter is used, the system will default to range = 1m.
    * @return a List of IexHistoricalPrices objects for the given symbols.
    */
   @GetMapping(value = "${mvc.iex.getHistoricalPricesPath}", produces = {
       MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity getHistoricalPrices(
       @RequestParam final String symbol,
-      @RequestParam(name="range",required=false) String range,
-      @RequestParam(name="date",required=false) String date) {
-    if (symbol==null) {
+      @RequestParam(name = "range", required = false) final String range,
+      @RequestParam(name = "date", required = false) final String date) {
+    if (symbol == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     } else {
       return new ResponseEntity<>(iexService.getHistoricalPricesForSymbol(symbol, range, date),
