@@ -75,7 +75,7 @@ public class IexRestControllerTest extends ASpringTest {
   public void testGetLastTradedPriceEmpty() throws Exception {
     MvcResult result = this.mvc.perform(
         org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-            .get("/iex/lastTradedPrice?token=xyz1&symbols=")
+            .get("/iex/lastTradedPrice?token=xyz1")
             .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isBadRequest())
         .andReturn();
@@ -85,7 +85,7 @@ public class IexRestControllerTest extends ASpringTest {
   public void testGetHistoricalPricesDate() throws Exception {
     MvcResult result = this.mvc.perform(
         org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-            .get("/iex/historicalPrices?token=xyz1&date=20200126&symbol=AAPL&range=")
+            .get("/iex/historicalPrices?token=xyz1&date=20200126&symbol=AAPL")
             // This URL will be hit by the MockMvc client. The result is configured in the file
             // src/test/resources/wiremock/mappings/mapping-historicalPrices-date.json
             .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -100,7 +100,7 @@ public class IexRestControllerTest extends ASpringTest {
   public void testGetHistoricalPricesRange() throws Exception {
     MvcResult result = this.mvc.perform(
         org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-            .get("/iex/historicalPrices?token=xyz1&range=5m&symbol=IBM&date=")
+            .get("/iex/historicalPrices?token=xyz1&range=5m&symbol=IBM")
             // This URL will be hit by the MockMvc client. The result is configured in the file
             // src/test/resources/wiremock/mappings/mapping-historicalPrices-range.json
             .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -115,7 +115,7 @@ public class IexRestControllerTest extends ASpringTest {
   public void testGetHistoricalPricesSymbolEmpty() throws Exception {
     MvcResult result = this.mvc.perform(
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                .get("/iex/historicalPrices?token=xyz1&symbol=&date=20200126&range=5m")
+                .get("/iex/historicalPrices?token=xyz1&date=20200126&range=5m")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isBadRequest())
         .andReturn();
@@ -125,7 +125,7 @@ public class IexRestControllerTest extends ASpringTest {
   public void testGetHistoricalPricesDateAndRangeEmpty() throws Exception {
     MvcResult result = this.mvc.perform(
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                .get("/iex/historicalPrices?token=xyz1&symbol=AAPL&date=&range=")
+                .get("/iex/historicalPrices?token=xyz1&symbol=AAPL")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
         // This URL will be hit by the MockMvc client. The result is configured in the file
         // src/test/resources/wiremock/mappings/mapping-historicalPrices-range.json
@@ -139,7 +139,7 @@ public class IexRestControllerTest extends ASpringTest {
   public void testGetHistoricalPricesAllEmpty() throws Exception {
     MvcResult result = this.mvc.perform(
             org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                .get("/iex/historicalPrices?token=xyz1&symbol=&date=&range=")
+                .get("/iex/historicalPrices?token=xyz1")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isBadRequest())
         .andReturn();

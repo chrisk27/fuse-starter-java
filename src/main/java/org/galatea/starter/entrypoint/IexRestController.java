@@ -70,9 +70,9 @@ public class IexRestController extends ResponseEntityExceptionHandler {
       MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity getHistoricalPrices(
       @RequestParam final String symbol,
-      @RequestParam(name="range",required = false) String range,
-      @RequestParam(name="date",required = false) String date) {
-    if (symbol.isBlank()) {
+      @RequestParam(name="range",required=false) String range,
+      @RequestParam(name="date",required=false) String date) {
+    if (symbol==null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     } else {
       return new ResponseEntity<>(iexService.getHistoricalPricesForSymbol(symbol, range, date),

@@ -61,10 +61,11 @@ public class IexService {
    */
   public List<IexHistoricalPrices> getHistoricalPricesForSymbol(
       final String symbol, String range, String date) {
-    if (symbol.isBlank()) {
+    if (symbol==null) {
       throw new IllegalArgumentException("No Stock Symbol Provided.");
     } else if (range==null && date==null) {
-      return iexClient.getHistoricalPricesForSymbolByRange(symbol, "1m");
+      String rangeVal = "1m";
+      return iexClient.getHistoricalPricesForSymbolByRange(symbol, rangeVal);
     } else if (date==null) {
       return iexClient.getHistoricalPricesForSymbolByRange(symbol, range);
     } else {
