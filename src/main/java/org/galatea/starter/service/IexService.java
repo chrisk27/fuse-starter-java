@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.galatea.starter.domain.IexHistoricalPrices;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
