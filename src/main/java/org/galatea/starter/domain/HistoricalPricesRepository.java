@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface HistoricalPricesRepository extends CrudRepository<IexHistoricalPrices, Long> {
+public interface HistoricalPricesRepository extends CrudRepository<IexHistoricalPricesDB, Long> {
 
   /**
    * Query database by both date and symbol.
@@ -12,12 +12,12 @@ public interface HistoricalPricesRepository extends CrudRepository<IexHistorical
    * @param date Date you want to query (formatted YYYYMMDD)
    * @return List of IexHistoricalPrices object
    */
-  List<IexHistoricalPrices> findBySymbolAndDate(String symbol, String date);
+  List<IexHistoricalPricesDB> findBySymbolAndDate(String symbol, String date);
 
   /**
    * Query database by automatically-generated id.
    * @param id ID number of the IexHistoricalPrices object
    * @return IexHistoricalPrices object
    */
-  IexHistoricalPrices findById(long id);
+  IexHistoricalPricesDB findById(long id);
 }

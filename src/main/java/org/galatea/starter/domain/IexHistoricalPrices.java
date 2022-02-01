@@ -1,21 +1,13 @@
 package org.galatea.starter.domain;
 
 import java.math.BigDecimal;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-/*import lombok.Builder;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder*/
-@Entity
+@Builder
 public class IexHistoricalPrices {
 
-  @Id
-  @GeneratedValue (strategy = GenerationType.AUTO)
-  private Long id;
   private String symbol;
   private BigDecimal close;
   private BigDecimal high;
@@ -45,76 +37,5 @@ public class IexHistoricalPrices {
     this.open = open;
     this.volume = volume;
     this.date = date;
-  }
-
-  @Override
-  public String toString() {
-    return String.format(
-        "Entry[symbol='%s', date='%s', id=%d]",
-        symbol, date, id);
-  }
-
-  /**
-   * ID getter.
-   * @return id
-   */
-  public Long getId() {
-    return id;
-  }
-
-  /**
-   * Symbol getter.
-   * @return symbol
-   */
-  public String getSymbol() {
-    return symbol;
-  }
-
-  /**
-   * Close price getter.
-   * @return close
-   */
-  public BigDecimal getClose() {
-    return close;
-  }
-
-  /**
-   * High price getter.
-   * @return high
-   */
-  public BigDecimal getHigh() {
-    return high;
-  }
-
-  /**
-   * Low price getter.
-   * @return low
-   */
-  public BigDecimal getLow() {
-    return low;
-  }
-
-  /**
-   * Open price getter.
-   * @return open
-   */
-  public BigDecimal getOpen() {
-    return open;
-  }
-
-  /**
-   * Volume getter.
-   * @return volume
-   */
-  public long getVolume() {
-    return volume;
-  }
-
-  /**
-   * Date getter.
-   * @return date
-   */
-  public String getDate() {
-    return date;
   }
 }

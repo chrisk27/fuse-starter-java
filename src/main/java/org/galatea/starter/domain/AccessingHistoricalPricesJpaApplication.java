@@ -31,13 +31,13 @@ public class AccessingHistoricalPricesJpaApplication {
   public CommandLineRunner demo(final HistoricalPricesRepository repository) {
     return (args) -> {
       // save a few entries
-      repository.save(new IexHistoricalPrices("DUMM", new BigDecimal("90.0"),
+      repository.save(new IexHistoricalPricesDB("DUMM", new BigDecimal("90.0"),
           new BigDecimal("95.50"), new BigDecimal("87.50"), new BigDecimal("92.75"),
           123456L, "2020-11-09"));
-      repository.save(new IexHistoricalPrices("DUMB", new BigDecimal("60.0"),
+      repository.save(new IexHistoricalPricesDB("DUMB", new BigDecimal("60.0"),
           new BigDecimal("99.50"), new BigDecimal("45.50"), new BigDecimal("80.75"),
           179876L, "2020-11-09"));
-      repository.save(new IexHistoricalPrices("DUMM", new BigDecimal("91.0"),
+      repository.save(new IexHistoricalPricesDB("DUMM", new BigDecimal("91.0"),
           new BigDecimal("92.50"), new BigDecimal("90.00"), new BigDecimal("90.0"),
           289366L, "2020-11-10"));
 
