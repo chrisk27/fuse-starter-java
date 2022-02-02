@@ -1,10 +1,19 @@
 package org.galatea.starter.service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.function.Predicate;
+import java.util.regex.*;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.galatea.starter.domain.HistoricalPricesRepository;
 import org.galatea.starter.domain.IexHistoricalPrices;
+import org.galatea.starter.domain.IexHistoricalPricesDB;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
 import org.springframework.stereotype.Service;
@@ -20,6 +29,9 @@ public class IexService {
 
   @NonNull
   private IexClient iexClient;
+
+  @NonNull
+  private HistoricalPricesRepository repository;
 
 
   /**
@@ -48,6 +60,139 @@ public class IexService {
   /**
    * Get the historical price for each symbol passed in for the date passed in.
    *
+   * @param symbol Stock symbol to get historical price for.
+   * @param range the range of time  (ex. "5m", "ytd" ) to get previous data (Optional).
+   * @param date the date from which we would want to get the previous data from (Optional).
+   *      Note: If neither optional parameter is used, the system will default to range = 1m.
+   *      - default behavior of Iex Cloud API
+   *      Note: If both optional parameters are provided, the system will default to the date.
+   *      - can be changed later if needed: IexCloud will not allow both options in call to client
+   * @return a list of IexHistoricalPrices objects for the given symbols.
+   */
+  public List<IexHistoricalPrices> getHistoricalPricesForSymbol(
+      final String symbol, final String range, final String date) {
+
+    if (symbol == null) {
+      throw new IllegalArgumentException("No Stock Symbol Provided.");
+    } else if (!isSymbolInDatabase(symbol)) {
+      //if symbol isn't in database, call Iex normally
+      return getHistoricalPricesFromIex(symbol, range, date);
+    }
+    else if (date != null) {
+      // Only returns a list of one object
+      return getHistoricalPriceBySymbolAndDate(symbol, date);
+    } else {
+      // Parse range into a list of dates and run them through getHistoricalPriceBySymbolAndDate
+      List<String> datesToLookThrough = rangeToDateList(range);
+      List<IexHistoricalPrices> outList = new ArrayList<>();
+      for (String dateVal : datesToLookThrough) {
+        List<IexHistoricalPrices> out = getHistoricalPriceBySymbolAndDate(symbol, dateVal);
+        if (!out.isEmpty()) {
+          outList.add(out.get(0));
+        }
+      }
+      return outList;
+    }
+  }
+
+  /**
+   * Converts a range string into a list of dates in YYYYMMDD format.
+   * Will ignore weekend dates. Later, will need to also remove bank holidays.
+   *
+   * @param range The range of time we are interested. Input options are:
+   *      - "5y", "2m", "7d": x number of years(y)/months(m)/days(d)
+   *      - "ytd": year to date
+   *
+   * @return a list of valid date strings (YYYYMMDD) in the range
+   */
+  public List<String> rangeToDateList(final String range) {
+    LocalDate endDate = LocalDate.now();
+    LocalDate startDate = null;
+
+    if (range.equalsIgnoreCase("ytd")) {
+      startDate = LocalDate.ofYearDay(endDate.getYear(), 1);
+    } else {
+      // Confirms range is valid entry
+      String pattern = "\\d+[dmyDMY]";
+      Pattern p = Pattern.compile(pattern);
+      Matcher m = p.matcher(range);
+      if (!m.matches()) {
+        throw new IllegalArgumentException("Improper Range Provided.");
+      }
+      // Parses string to correct start date
+      String tp = range.substring(range.length() - 1);
+      int numOfTime = Integer.parseInt(range.substring(0,range.length()-1));
+      if (tp.equalsIgnoreCase("d")) {
+        startDate = endDate.minusDays(numOfTime);
+      } else if (tp.equalsIgnoreCase("m")) {
+        startDate = endDate.minusMonths(numOfTime);
+      } else {
+        startDate = endDate.minusYears(numOfTime);
+      }
+    }
+
+    // Predicate for checking on weekends
+    Predicate<LocalDate> isWeekend = date -> date.getDayOfWeek() == DayOfWeek.SATURDAY
+        || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+
+    // List of Business Days
+    List<LocalDate> businessDays = startDate.datesUntil(endDate)
+        .filter(isWeekend.negate())
+        .collect(Collectors.toList());
+
+    // Convert to list of strings in proper format
+    List<String> dateList = new ArrayList<>();
+    for (LocalDate lD : businessDays) {
+      dateList.add(lD.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+    }
+    return dateList;
+  }
+
+  /**
+   * Chooses whether to get the historical price for the symbol from the repository or Iex.
+   * Precedence is always given to the repository, unless is not found within it.
+   *
+   * @param symbol Stock symbol to get the historical price for.
+   * @param date Input date (formatted YYYYMMDD) to get price data for.
+   *      Note: We will convert this into YYYY-MM-DD format for repository search.
+   *      - Format of Iex API output
+   * @return a list (length = 1) of IexHistoricalPrices objects.
+   */
+  public List<IexHistoricalPrices> getHistoricalPriceBySymbolAndDate(
+      final String symbol, final String date) {
+    //First, try the database
+    List<IexHistoricalPrices> dbList = new ArrayList<IexHistoricalPrices>();
+    List<IexHistoricalPricesDB> entry =
+        repository.findBySymbolAndDate(symbol, convertDateFormatToOutput(date));
+
+    if (!entry.isEmpty()) {
+      dbList.add(new IexHistoricalPrices(entry.get(0)));
+      return dbList;
+    } else {
+      //If not in database, call from Iex, insert into database, and return
+      List<IexHistoricalPrices> call = iexClient.getHistoricalPricesForSymbolByDate(symbol, date);
+      if (!call.isEmpty()) {
+        repository.save(new IexHistoricalPricesDB(call.get(0)));
+      }
+      return call;
+    }
+  }
+
+  /**
+   * Converts input date (format:YYYYMMDD) to output date (format:YYYY-MM-DD).
+   * @param inputDate date string in YYYYMMDD format
+   * @return outputDate string in YYYY-MM-DD format.
+   */
+  public String convertDateFormatToOutput(final String inputDate) {
+    StringBuilder builder = new StringBuilder(inputDate);
+    builder.insert(6,'-');
+    builder.insert(4,'-');
+    return builder.toString();
+  }
+
+  /**
+   * Calls Iex API client to obtain historical prices for full query.
+   *
    * @param symbol list of symbols to get historical price for.
    * @param range the range of time  (ex. "5m", "ytd" ) to get previous data (Optional).
    * @param date the date from which we would want to get the previous data from (Optional).
@@ -55,21 +200,37 @@ public class IexService {
    *      - default behavior of Iex Cloud API
    *      Note: If both optional parameters are provided, the system will default to the date.
    *      - can be changed later if needed: IexCloud will not allow both options in call to client
-   * @return a IexHistoricalPrices objects for the given symbols.
+   * @return a list of IexHistoricalPrices objects for the given symbols.
    */
-  public List<IexHistoricalPrices> getHistoricalPricesForSymbol(
+  public List<IexHistoricalPrices> getHistoricalPricesFromIex(
       final String symbol, final String range, final String date) {
-    if (symbol == null) {
-      throw new IllegalArgumentException("No Stock Symbol Provided.");
-    } else if (range == null && date == null) {
-      String rangeVal = "1m";
-      return iexClient.getHistoricalPricesForSymbolByRange(symbol, rangeVal);
+    List<IexHistoricalPrices> call = new ArrayList<>();
+
+    if (range == null && date == null) {
+      call =  iexClient.getHistoricalPricesForSymbolByRange(symbol, "1m");
     } else if (date == null) {
-      return iexClient.getHistoricalPricesForSymbolByRange(symbol, range);
+      // call precedence is given to date over range
+      call = iexClient.getHistoricalPricesForSymbolByRange(symbol, range);
     } else {
-      return iexClient.getHistoricalPricesForSymbolByDate(symbol, date);
+       call = iexClient.getHistoricalPricesForSymbolByDate(symbol, date);
     }
+
+    for (IexHistoricalPrices entity : call) {
+      repository.save(new IexHistoricalPricesDB(entity));
+    }
+    return call;
   }
 
+
+  /**
+   * Checks in database if there are any entries with the stock.
+   *
+   * @param symbol Stock symbol to get historical price for
+   *
+   * @return true if there is an entry of a stock in the database, false otherwise
+   */
+  public boolean isSymbolInDatabase(final String symbol) {
+    return !repository.findBySymbol(symbol).isEmpty();
+  }
 
 }

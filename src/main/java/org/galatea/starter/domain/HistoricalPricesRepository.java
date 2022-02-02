@@ -20,4 +20,6 @@ public interface HistoricalPricesRepository extends CrudRepository<IexHistorical
    * @return IexHistoricalPrices object
    */
   IexHistoricalPricesDB findById(long id);
+
+  List<IexHistoricalPricesDB> findBySymbol(String symbol);
 }

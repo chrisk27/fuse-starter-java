@@ -44,7 +44,7 @@ public class AccessingHistoricalPricesJpaApplication {
       // fetch all entries
       log.info("Entries found with findAll():");
       log.info("-----------------------------");
-      for (IexHistoricalPrices entry : repository.findAll()) {
+      for (IexHistoricalPricesDB entry : repository.findAll()) {
         log.info(entry.toString());
       }
       log.info("");

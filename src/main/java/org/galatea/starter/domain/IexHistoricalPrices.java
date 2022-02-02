@@ -38,4 +38,18 @@ public class IexHistoricalPrices {
     this.volume = volume;
     this.date = date;
   }
+
+  /**
+   * Constructor from a database entry (IexHistoricalPricesDB).
+   * @param entity IexHistoricalPricesDB entry
+   */
+  public IexHistoricalPrices(final IexHistoricalPricesDB entity) {
+    this.symbol = entity.getSymbol();
+    this.close = entity.getClose();
+    this.high = entity.getHigh();
+    this.low = entity.getLow();
+    this.open = entity.getOpen();
+    this.volume = entity.getVolume();
+    this.date = entity.getDate();
+  }
 }

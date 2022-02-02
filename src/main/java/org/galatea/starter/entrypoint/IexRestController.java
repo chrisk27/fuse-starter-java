@@ -75,7 +75,8 @@ public class IexRestController extends ResponseEntityExceptionHandler {
     if (symbol == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     } else {
-      return new ResponseEntity<>(iexService.getHistoricalPricesForSymbol(symbol, range, date),
+      String sym = symbol.toUpperCase();
+      return new ResponseEntity<>(iexService.getHistoricalPricesForSymbol(sym, range, date),
           HttpStatus.OK);
     }
   }
