@@ -1,16 +1,19 @@
 package org.galatea.starter.entrypoint;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasValue;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import javax.servlet.RequestDispatcher;
+import java.util.List;
 import junitparams.JUnitParamsRunner;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.galatea.starter.ASpringTest;
+import org.galatea.starter.domain.HistoricalPricesRepository;
+import org.galatea.starter.domain.IexHistoricalPricesDB;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 
 @RequiredArgsConstructor
@@ -41,6 +45,10 @@ public class IexRestControllerTest extends ASpringTest {
   @Autowired
   private MockMvc mvc;
 
+  @Autowired
+  HistoricalPricesRepository testHPRepository;
+
+  // Test the fuse REST endpoint
   @Test
   public void testGetSymbolsEndpoint() throws Exception {
     MvcResult result = this.mvc.perform(
@@ -56,6 +64,7 @@ public class IexRestControllerTest extends ASpringTest {
         .andReturn();
   }
 
+  // Test the getLastTradedPrice and potential null params
   @Test
   public void testGetLastTradedPrice() throws Exception {
 
@@ -81,6 +90,7 @@ public class IexRestControllerTest extends ASpringTest {
         .andReturn();
   }
 
+  // Test Historical Price Endpoint for calls of different parameter combinations
   @Test
   public void testGetHistoricalPricesDate() throws Exception {
     MvcResult result = this.mvc.perform(
@@ -144,4 +154,61 @@ public class IexRestControllerTest extends ASpringTest {
         .andExpect(status().isBadRequest())
         .andReturn();
   }
+
+  // Test how the controller works with both the external API and the internal database
+  @Test
+  public void testInsertionIntoRepository() throws Exception {
+    List<IexHistoricalPricesDB> entries0 = testHPRepository.findBySymbol("T");
+    assertThat(entries0).isEmpty();
+
+    //Puts info into the database after calling the external API
+    MvcResult result = this.mvc.perform(
+        MockMvcRequestBuilders
+            .get("/iex/historicalPrices?range=5d&symbol=T&token=xyz1")
+            .accept(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    List<IexHistoricalPricesDB> entries1 = testHPRepository.findBySymbol("T");
+    assertThat(entries1).hasSize(3);
+  }
+
+  @Test
+  public void testFindBySymbolAndDate() throws Exception {
+    this.mvc.perform(
+            MockMvcRequestBuilders
+                .get("/iex/historicalPrices?range=5d&symbol=MRNA&token=xyz1")
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    List<IexHistoricalPricesDB> sample1 =
+        testHPRepository.findBySymbolAndDate("MRNA","2022-02-01");
+    List<IexHistoricalPricesDB> sample2 =
+        testHPRepository.findBySymbolAndDate("MRNA","2022-01-11");
+    List<IexHistoricalPricesDB> sample3 =
+        testHPRepository.findBySymbolAndDate("MMA", "2022-02-01");
+
+    //Negative tests
+    assertThat(sample2).isEmpty();
+    assertThat(sample3).isEmpty();
+
+    //Positive tests
+    assertThat(sample1.get(0).getClose()).isEqualTo(new BigDecimal("172.74"));
+    assertThat(sample1.get(0).getVolume()).isEqualTo(7329761);
+  }
+
+  @Test
+  public void testDontWriteEmptyToDB() throws Exception {
+    this.mvc.perform(
+            MockMvcRequestBuilders
+                .get("/iex/historicalPrices?date=20220117&symbol=BIIB&token=xyz1")
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").isEmpty())
+        .andReturn();
+
+    assertThat(testHPRepository.existsBySymbol("BIIB")).isFalse();
+  }
+
 }

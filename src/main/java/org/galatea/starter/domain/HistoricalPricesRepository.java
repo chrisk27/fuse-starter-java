@@ -22,4 +22,6 @@ public interface HistoricalPricesRepository extends CrudRepository<IexHistorical
   IexHistoricalPricesDB findById(long id);
 
   List<IexHistoricalPricesDB> findBySymbol(String symbol);
+
+  boolean existsBySymbol(String symbol);
 }

@@ -96,7 +96,7 @@ public class IexService {
   }
 
   /**
-   * Converts a range string into a list of dates in YYYYMMDD format.
+   * Converts a range string into a list of dates (string) in YYYYMMDD format.
    * Will ignore weekend dates. Later, will need to also remove bank holidays.
    *
    * @param range The range of time we are interested. Input options are:
@@ -107,7 +107,7 @@ public class IexService {
    */
   public List<String> rangeToDateList(final String range) {
     LocalDate endDate = LocalDate.now();
-    LocalDate startDate = null;
+    LocalDate startDate;
 
     if (range.equalsIgnoreCase("ytd")) {
       startDate = LocalDate.ofYearDay(endDate.getYear(), 1);
@@ -161,7 +161,7 @@ public class IexService {
   public List<IexHistoricalPrices> getHistoricalPriceBySymbolAndDate(
       final String symbol, final String date) {
     //First, try the database
-    List<IexHistoricalPrices> dbList = new ArrayList<IexHistoricalPrices>();
+    List<IexHistoricalPrices> dbList = new ArrayList<>();
     List<IexHistoricalPricesDB> entry =
         repository.findBySymbolAndDate(symbol, convertDateFormatToOutput(date));
 
@@ -204,7 +204,7 @@ public class IexService {
    */
   public List<IexHistoricalPrices> getHistoricalPricesFromIex(
       final String symbol, final String range, final String date) {
-    List<IexHistoricalPrices> call = new ArrayList<>();
+    List<IexHistoricalPrices> call;
 
     if (range == null && date == null) {
       call =  iexClient.getHistoricalPricesForSymbolByRange(symbol, "1m");
@@ -230,7 +230,7 @@ public class IexService {
    * @return true if there is an entry of a stock in the database, false otherwise
    */
   public boolean isSymbolInDatabase(final String symbol) {
-    return !repository.findBySymbol(symbol).isEmpty();
+    return repository.existsBySymbol(symbol);
   }
 
 }
