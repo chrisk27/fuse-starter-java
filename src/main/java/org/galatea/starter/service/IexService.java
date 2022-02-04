@@ -201,10 +201,8 @@ public class IexService {
    * @return outputDate string in YYYY-MM-DD format.
    */
   public String convertDateFormatToOutput(final String inputDate) {
-    StringBuilder builder = new StringBuilder(inputDate);
-    builder.insert(6,'-');
-    builder.insert(4,'-');
-    return builder.toString();
+    DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    return DateTimeFormatter.ISO_DATE.format(inFormatter.parse(inputDate));
   }
 
   /**
