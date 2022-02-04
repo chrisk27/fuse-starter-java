@@ -5,8 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
 public class IexHistoricalPricesDB {
 
   @Id
@@ -20,8 +22,6 @@ public class IexHistoricalPricesDB {
   private BigDecimal open;
   private long volume;
   private String date;
-
-  protected IexHistoricalPricesDB() {}
 
 /**
  * Constructor method for IexHistoricalPrices.
@@ -56,13 +56,6 @@ public class IexHistoricalPricesDB {
     this.open = entity.getOpen();
     this.volume = entity.getVolume();
     this.date = entity.getDate();
-  }
-
-  @Override
-  public String toString() {
-    return String.format(
-        "Entry[symbol='%s', date='%s', id=%d]",
-        symbol, date, id);
   }
 
   /**
