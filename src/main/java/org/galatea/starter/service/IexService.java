@@ -161,13 +161,13 @@ public class IexService {
   public List<IexHistoricalPrices> getHistoricalPriceBySymbolAndDate(
       final String symbol, final String date) {
     //First, try the database
-    List<IexHistoricalPrices> dbList = new ArrayList<>();
-    List<IexHistoricalPricesDB> entry =
+    List<IexHistoricalPrices> listObjConvertedFromDB = new ArrayList<>();
+    List<IexHistoricalPricesDB> dbMatch =
         repository.findBySymbolAndDate(symbol, convertDateFormatToOutput(date));
 
-    if (!entry.isEmpty()) {
-      dbList.add(new IexHistoricalPrices(entry.get(0)));
-      return dbList;
+    if (!dbMatch.isEmpty()) {
+      listObjConvertedFromDB.add(new IexHistoricalPrices(dbMatch.get(0)));
+      return listObjConvertedFromDB;
     } else {
       //If not in database, call from Iex, insert into database, and return
       List<IexHistoricalPrices> call = iexClient.getHistoricalPricesForSymbolByDate(symbol, date);
@@ -204,21 +204,13 @@ public class IexService {
    */
   public List<IexHistoricalPrices> getHistoricalPricesFromIex(
       final String symbol, final String range, final String date) {
-    List<IexHistoricalPrices> call;
+    List<IexHistoricalPrices> pricesFromIexApi
+        = getFromIex(symbol, range, date);
 
-    if (range == null && date == null) {
-      call =  iexClient.getHistoricalPricesForSymbolByRange(symbol, "1m");
-    } else if (date == null) {
-      // call precedence is given to date over range
-      call = iexClient.getHistoricalPricesForSymbolByRange(symbol, range);
-    } else {
-       call = iexClient.getHistoricalPricesForSymbolByDate(symbol, date);
-    }
-
-    for (IexHistoricalPrices entity : call) {
+    for (IexHistoricalPrices entity : pricesFromIexApi) {
       repository.save(new IexHistoricalPricesDB(entity));
     }
-    return call;
+    return pricesFromIexApi;
   }
 
 
