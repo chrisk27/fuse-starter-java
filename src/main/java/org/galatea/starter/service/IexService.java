@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.regex.*;
 import java.util.List;
@@ -79,8 +80,11 @@ public class IexService {
       return getHistoricalPricesFromIex(symbol, range, date);
     }
     else if (date != null) {
-      // Only returns a list of one object
-      return getHistoricalPriceBySymbolAndDate(symbol, date);
+      if (!isDateWeekend(date)) {
+        return getHistoricalPriceBySymbolAndDate(symbol, date);
+      } else {
+        return Collections.emptyList();
+      }
     } else {
       // Parse range into a list of dates and run them through getHistoricalPriceBySymbolAndDate
       List<String> datesToLookThrough = rangeToDateList(range);
@@ -93,6 +97,19 @@ public class IexService {
       }
       return outList;
     }
+  }
+
+  /**
+   * Check if the date is a weekend.
+   * @param date date (string formatted YYYYMMDD) we are considering
+   * @return boolean: true if the date is a weekend, false otherwise
+   */
+  public boolean isDateWeekend(final String date) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    LocalDate dateToCheck = LocalDate.parse(date, formatter);
+
+    DayOfWeek d = dateToCheck.getDayOfWeek();
+    return (d == DayOfWeek.SATURDAY || d == DayOfWeek.SUNDAY);
   }
 
   /**
