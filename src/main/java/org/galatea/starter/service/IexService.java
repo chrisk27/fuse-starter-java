@@ -28,6 +28,9 @@ import org.springframework.util.CollectionUtils;
 @RequiredArgsConstructor
 public class IexService {
 
+  // Declare input formatter for date calls to IEX
+  private static final DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
   @NonNull
   private IexClient iexClient;
 
@@ -105,8 +108,7 @@ public class IexService {
    * @return boolean: true if the date is a weekend, false otherwise
    */
   public boolean isDateWeekend(final String date) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-    LocalDate dateToCheck = LocalDate.parse(date, formatter);
+    LocalDate dateToCheck = LocalDate.parse(date, inFormatter);
 
     DayOfWeek d = dateToCheck.getDayOfWeek();
     return (d == DayOfWeek.SATURDAY || d == DayOfWeek.SUNDAY);
@@ -201,7 +203,6 @@ public class IexService {
    * @return outputDate string in YYYY-MM-DD format.
    */
   public String convertDateFormatToOutput(final String inputDate) {
-    DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
     return DateTimeFormatter.ISO_DATE.format(inFormatter.parse(inputDate));
   }
 
