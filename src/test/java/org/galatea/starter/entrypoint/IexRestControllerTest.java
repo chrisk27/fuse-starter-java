@@ -182,20 +182,20 @@ public class IexRestControllerTest extends ASpringTest {
         .andExpect(status().isOk())
         .andReturn();
 
-    List<IexHistoricalPricesDB> sample1 =
+    IexHistoricalPricesDB sample1 =
         testHPRepository.findBySymbolAndDate("MRNA","2022-02-01");
-    List<IexHistoricalPricesDB> sample2 =
+    IexHistoricalPricesDB sample2 =
         testHPRepository.findBySymbolAndDate("MRNA","2022-01-11");
-    List<IexHistoricalPricesDB> sample3 =
+    IexHistoricalPricesDB sample3 =
         testHPRepository.findBySymbolAndDate("MMA", "2022-02-01");
 
     //Negative tests
-    assertThat(sample2).isEmpty();
-    assertThat(sample3).isEmpty();
+    assertThat(sample2).isNull();
+    assertThat(sample3).isNull();
 
     //Positive tests
-    assertThat(sample1.get(0).getClose()).isEqualTo(new BigDecimal("172.74"));
-    assertThat(sample1.get(0).getVolume()).isEqualTo(7329761);
+    assertThat(sample1.getClose()).isEqualTo(new BigDecimal("172.74"));
+    assertThat(sample1.getVolume()).isEqualTo(7329761);
   }
 
   @Test

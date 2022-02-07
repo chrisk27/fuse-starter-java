@@ -12,7 +12,7 @@ public interface HistoricalPricesRepository extends CrudRepository<IexHistorical
    * @param date Date you want to query (formatted YYYYMMDD)
    * @return List of IexHistoricalPrices object
    */
-  List<IexHistoricalPricesDB> findBySymbolAndDate(String symbol, String date);
+  IexHistoricalPricesDB findBySymbolAndDate(String symbol, String date);
 
   /**
    * Query database by automatically-generated id.

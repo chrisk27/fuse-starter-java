@@ -83,19 +83,19 @@ public class IexService {
       return getHistoricalPricesFromIex(symbol, range, date);
     }
     else if (date != null) {
+      List<IexHistoricalPrices> outputFromDate = new ArrayList<>();
       if (!isDateWeekend(date)) {
-        return getHistoricalPriceBySymbolAndDate(symbol, date);
-      } else {
-        return Collections.emptyList();
+        outputFromDate.add(getHistoricalPriceBySymbolAndDate(symbol, date));
       }
+      return outputFromDate;
     } else {
       // Parse range into a list of dates and run them through getHistoricalPriceBySymbolAndDate
       List<String> datesToLookThrough = rangeToDateList(range);
       List<IexHistoricalPrices> outList = new ArrayList<>();
       for (String dateVal : datesToLookThrough) {
-        List<IexHistoricalPrices> out = getHistoricalPriceBySymbolAndDate(symbol, dateVal);
-        if (!out.isEmpty()) {
-          outList.add(out.get(0));
+        IexHistoricalPrices out = getHistoricalPriceBySymbolAndDate(symbol, dateVal);
+        if (out != null) {
+          outList.add(out);
         }
       }
       return outList;
@@ -177,23 +177,21 @@ public class IexService {
    *      - Format of Iex API output
    * @return a list (length = 1) of IexHistoricalPrices objects.
    */
-  public List<IexHistoricalPrices> getHistoricalPriceBySymbolAndDate(
+  public IexHistoricalPrices getHistoricalPriceBySymbolAndDate(
       final String symbol, final String date) {
     //First, try the database
-    List<IexHistoricalPrices> listObjConvertedFromDB = new ArrayList<>();
-    List<IexHistoricalPricesDB> dbMatch =
+    IexHistoricalPricesDB dbMatch =
         repository.findBySymbolAndDate(symbol, convertDateFormatToOutput(date));
 
-    if (!dbMatch.isEmpty()) {
-      listObjConvertedFromDB.add(new IexHistoricalPrices(dbMatch.get(0)));
-      return listObjConvertedFromDB;
+    if (dbMatch != null) {
+      return new IexHistoricalPrices(dbMatch);
     } else {
       //If not in database, call from Iex, insert into database, and return
       List<IexHistoricalPrices> call = iexClient.getHistoricalPricesForSymbolByDate(symbol, date);
       if (!call.isEmpty()) {
         repository.save(new IexHistoricalPricesDB(call.get(0)));
       }
-      return call;
+      return call.get(0);
     }
   }
 
