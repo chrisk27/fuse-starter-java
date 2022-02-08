@@ -1,5 +1,6 @@
 package org.galatea.starter.service;
 
+import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +28,8 @@ import org.springframework.util.CollectionUtils;
 @Service
 @RequiredArgsConstructor
 public class IexService {
+
+  private final Clock clock;
 
   // Declare input formatter for date calls to IEX
   private static final DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -91,14 +94,14 @@ public class IexService {
     } else {
       // Parse range into a list of dates and run them through getHistoricalPriceBySymbolAndDate
       List<String> datesToLookThrough = rangeToDateList(range);
-      List<IexHistoricalPrices> outList = new ArrayList<>();
+      List<IexHistoricalPrices> outputFromDate = new ArrayList<>();
       for (String dateVal : datesToLookThrough) {
         IexHistoricalPrices out = getHistoricalPriceBySymbolAndDate(symbol, dateVal);
         if (out != null) {
-          outList.add(out);
+          outputFromDate.add(out);
         }
       }
-      return outList;
+      return outputFromDate;
     }
   }
 
@@ -125,7 +128,7 @@ public class IexService {
    * @return a list of valid date strings (YYYYMMDD) in the range
    */
   public List<String> rangeToDateList(final String range) {
-    LocalDate endDate = LocalDate.now();
+    LocalDate endDate = LocalDate.now(clock);
     LocalDate startDate;
 
     if (range.equalsIgnoreCase("ytd")) {
@@ -246,7 +249,11 @@ public class IexService {
         // call precedence is given to date over range
         return iexClient.getHistoricalPricesForSymbolByRange(symbol, range);
       } else {
-        return iexClient.getHistoricalPricesForSymbolByDate(symbol, date);
+        if (!isDateWeekend(date)) {
+          return iexClient.getHistoricalPricesForSymbolByDate(symbol, date);
+        } else {
+          return Collections.emptyList();
+        }
       }
     }
 

@@ -1,12 +1,19 @@
 {
-  "name" : "stock_sym_chart_date",
+  "name" : "pull_only_one_date_from_iex",
   "request" : {
-    "url" : "/stock/AAPL/chart/date/20200124?token=xyz1&chartByDay=true",
+    "url" : "/stock/AMZN/chart/date/20220201?token=xyz1&chartByDay=true",
     "method" : "GET"
   },
   "response" : {
     "status" : 200,
-    "jsonBody" : [{"symbol":"AAPL","close": 75.0875,"high": 75.15,"low": 73.7975, "open": 74.06, "volume": 135647456,"date": "2020-01-26"}],
+    "jsonBody" : [{
+      "symbol":"AMZN",
+      "close": 3023.87,
+      "high": 3034.16,
+      "low": 2952.55,
+      "open": 3000,
+      "volume": 2960992,
+      "date": "2022-02-01"}],
     "headers" : {
       "Server" : "nginx",
       "Date" : "Thu, 08 Aug 2019 14:08:53 GMT",

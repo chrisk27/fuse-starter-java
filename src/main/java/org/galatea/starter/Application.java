@@ -1,5 +1,6 @@
 package org.galatea.starter;
 
+import java.time.Clock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.galatea.starter.utils.exception.MissingOptionException;
@@ -7,6 +8,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 
 /**
@@ -39,5 +41,10 @@ public class Application implements ApplicationRunner {
     if (!args.containsOption("server.port") && System.getProperty("server.port") == null) {
       throw new MissingOptionException("Server port must be set via command line parameter");
     }
+  }
+
+  @Bean
+  Clock clock() {
+    return Clock.systemUTC();
   }
 }
