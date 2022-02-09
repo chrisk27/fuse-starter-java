@@ -1,12 +1,15 @@
 package org.galatea.starter.domain;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class IexHistoricalPrices {
 
   private String symbol;
@@ -16,4 +19,18 @@ public class IexHistoricalPrices {
   private BigDecimal open;
   private long volume;
   private String date;
+
+  /**
+   * Constructor from a database entry (IexHistoricalPricesDB).
+   * @param entity IexHistoricalPricesDB entry
+   */
+  public IexHistoricalPrices(final IexHistoricalPricesDB entity) {
+    this.symbol = entity.getSymbol();
+    this.close = entity.getClose();
+    this.high = entity.getHigh();
+    this.low = entity.getLow();
+    this.open = entity.getOpen();
+    this.volume = entity.getVolume();
+    this.date = entity.getDate();
+  }
 }

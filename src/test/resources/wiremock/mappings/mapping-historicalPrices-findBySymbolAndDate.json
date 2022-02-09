@@ -1,13 +1,38 @@
 {
-
-  "name" : "stock_aapl_chart_x",
+  "name": "to_repo_mrna_5d",
   "request" : {
-    "url" : "/stock/TSLA/chart/1m?token=xyz1",
+    "url" : "/stock/MRNA/chart/5d?token=xyz1",
     "method" : "GET"
   },
   "response" : {
     "status" : 200,
-    "jsonBody" : [{"symbol":"TSLA","close": 177.57,"high": 179.23,"low": 177.26, "open": 178.0856, "volume": 64062261,"date": "2021-12-31"}],
+    "jsonBody" : [{
+      "symbol": "MRNA",
+      "close": 169.33,
+      "high": 170.33,
+      "low": 154.56,
+      "open": 160.05,
+      "volume": 9292578,
+      "date": "2022-01-31"
+    },
+      {
+        "symbol": "MRNA",
+        "close": 172.74,
+        "high": 177.57,
+        "low": 167.29,
+        "open": 175.2,
+        "volume": 7329761,
+        "date": "2022-02-01"
+      },
+      {
+        "symbol": "MRNA",
+        "close": 169.61,
+        "high": 177.2,
+        "low": 163.58,
+        "open": 170.8074,
+        "volume": 5395036,
+        "date": "2022-02-02"
+    }],
     "headers" : {
       "Server" : "nginx",
       "Date" : "Thu, 08 Aug 2019 14:08:53 GMT",
@@ -27,5 +52,5 @@
     }
   },
   "persistent" : true,
-  "insertionIndex" : 13
+  "insertionIndex" : 14
 }

@@ -1,13 +1,19 @@
 {
-
-  "name" : "stock_aapl_chart_x",
+  "name" : "pull_only_one_date_from_iex",
   "request" : {
-    "url" : "/stock/TSLA/chart/1m?token=xyz1",
+    "url" : "/stock/AMZN/chart/date/20220201?token=xyz1&chartByDay=true",
     "method" : "GET"
   },
   "response" : {
     "status" : 200,
-    "jsonBody" : [{"symbol":"TSLA","close": 177.57,"high": 179.23,"low": 177.26, "open": 178.0856, "volume": 64062261,"date": "2021-12-31"}],
+    "jsonBody" : [{
+      "symbol":"AMZN",
+      "close": 3023.87,
+      "high": 3034.16,
+      "low": 2952.55,
+      "open": 3000,
+      "volume": 2960992,
+      "date": "2022-02-01"}],
     "headers" : {
       "Server" : "nginx",
       "Date" : "Thu, 08 Aug 2019 14:08:53 GMT",
@@ -27,5 +33,5 @@
     }
   },
   "persistent" : true,
-  "insertionIndex" : 13
+  "insertionIndex" : 6
 }

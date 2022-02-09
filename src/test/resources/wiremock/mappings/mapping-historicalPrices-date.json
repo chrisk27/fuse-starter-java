@@ -1,7 +1,7 @@
 {
   "name" : "stock_sym_chart_date",
   "request" : {
-    "url" : "/stock/AAPL/chart/date/20200126?token=xyz1",
+    "url" : "/stock/AAPL/chart/date/20200124?token=xyz1&chartByDay=true",
     "method" : "GET"
   },
   "response" : {
