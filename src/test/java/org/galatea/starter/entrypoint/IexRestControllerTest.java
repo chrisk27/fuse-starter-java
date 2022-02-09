@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.galatea.starter.ASpringTest;
 import org.galatea.starter.domain.HistoricalPricesRepository;
 import org.galatea.starter.domain.IexHistoricalPricesDB;
+import org.hamcrest.number.BigDecimalCloseTo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -287,9 +288,36 @@ public class IexRestControllerTest extends ASpringTest {
             // The other two entries should be from the database.
             .accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("[0].date", is("2022-02-01")))
+
+        // Test all outputs to ensure everything works
+
+        // From IEX
+        .andExpect(jsonPath("[0].symbol", is("AMZN")))
+        .andExpect(jsonPath("[0].close").value(new BigDecimal("3023.87")))
+        .andExpect(jsonPath("[0].high").value(new BigDecimal("3034.16")))
+        .andExpect(jsonPath("[0].low").value(new BigDecimal("2952.55")))
         .andExpect(jsonPath("[0].open").value(new BigDecimal("3000")))
+        .andExpect(jsonPath("[0].volume").value(2960992))
+        .andExpect(jsonPath("[0].date", is("2022-02-01")))
+
+
+        // From database
+        .andExpect(jsonPath("[1].symbol", is("AMZN")))
+        .andExpect(jsonPath("[1].close").value(new BigDecimal("3012.25")))
+        .andExpect(jsonPath("[1].high").value(new BigDecimal("3101.5")))
+        .andExpect(jsonPath("[1].low").value(new BigDecimal("2977.27")))
+        .andExpect(jsonPath("[1].open").value(new BigDecimal("3131.0")))
+        .andExpect(jsonPath("[1].volume").value(4366488))
+        .andExpect(jsonPath("[1].date", is("2022-02-02")))
+
+        .andExpect(jsonPath("[2].symbol", is("AMZN")))
+        .andExpect(jsonPath("[2].close").value(new BigDecimal("2776.91")))
+        .andExpect(jsonPath("[2].high").value(new BigDecimal("2884.95")))
+        .andExpect(jsonPath("[2].low").value(new BigDecimal("2766.66")))
+        .andExpect(jsonPath("[2].open").value(new BigDecimal("2834.75")))
+        .andExpect(jsonPath("[2].volume").value(11276568))
         .andExpect(jsonPath("[2].date", is("2022-02-03")))
+
         .andReturn();
 
   }
